@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Media Schedule 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#1a56db;--blue-bg:#eff4ff;--blue-border:#bfcffe;
+    --yellow:#b45309;--yellow-bg:#fffbeb;--yellow-border:#fcd34d;
+    --text:#111827;--muted:#6b7280;--light:#f9fafb;--border:#e5e7eb;
+    --green:#166534;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+    --red:#991b1b;--red-bg:#fef2f2;--red-border:#fecaca;
+  }
+  body{background:#fff;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh}
+
+  /* HEADER */
+  .app-header{background:#fff;border-bottom:1px solid var(--border);padding:20px 28px 0;position:sticky;top:0;z-index:200}
+  .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .app-title{font-size:1.1rem;font-weight:700;letter-spacing:-0.02em}
+  .app-title span{font-weight:300;color:var(--muted);font-size:0.85rem;margin-left:8px}
+  .admin-controls{display:flex;align-items:center;gap:10px}
+  .admin-badge{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:100px;display:none}
+  .admin-badge.visible{display:inline-block}
+  .lock-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:0.72rem;font-weight:500;color:var(--muted);font-family:'Inter',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:5px}
+  .lock-btn:hover{border-color:#9ca3af;color:var(--text)}
+
+  .tabs{display:flex;gap:0}
+  .tab-btn{background:none;border:none;border-bottom:2px solid transparent;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;color:var(--muted);padding:8px 16px 10px;cursor:pointer;transition:all 0.15s}
+  .tab-btn:hover{color:var(--text)}
+  .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+  .tab-btn.admin-only{display:none}
+  .tab-btn.admin-only.visible{display:block}
+
+  /* PANELS */
+  .panel{display:none;padding:24px 28px 60px;max-width:900px;margin:0 auto}
+  .panel.active{display:block}
+
+  /* CONTROLS */
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+  select,input[type=text],input[type=date]{
+    background:var(--light);border:1px solid var(--border);color:var(--text);
+    border-radius:6px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;padding:7px 12px;cursor:pointer
+  }
+  select{
+    appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;padding-right:30px
+  }
+  select:focus,input:focus{outline:none;border-color:var(--blue)}
+  .btn{border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;padding:7px 14px;cursor:pointer;transition:all 0.15s}
+  .btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#1648c8}
+  .btn-secondary{background:var(--light);border:1px solid var(--border);color:var(--text)}.btn-secondary:hover{border-color:#9ca3af}
+  .btn-danger{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+  .btn-sm{padding:4px 10px;font-size:0.72rem}
+
+  .month-filters{display:flex;gap:5px;flex-wrap:wrap}
+  .month-btn{background:var(--light);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:500;padding:5px 11px;cursor:pointer;transition:all 0.15s}
+  .month-btn:hover{border-color:#9ca3af;color:var(--text)}
+  .month-btn.active{background:var(--text);border-color:var(--text);color:#fff}
+
+  /* LEGEND */
+  .legend{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:0.72rem;font-weight:500;color:var(--muted)}
+  .legend-pip{width:9px;height:9px;border-radius:2px}
+
+  /* MONTH/WEEK GROUPS */
+  .month-group{margin-bottom:36px}
+  .month-heading{font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px}
+  .week-group{margin-bottom:16px}
+  .week-label{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#d1d5db;margin-bottom:6px;padding-left:2px}
+
+  /* EVENT CARD */
+  .event-card{border:1px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:hidden}
+  .card-header{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border)}
+  .card-header.sunday{background:var(--blue-bg);border-bottom-color:var(--blue-border)}
+  .card-header.ipm{background:var(--yellow-bg);border-bottom-color:var(--yellow-border)}
+  .event-date{font-size:0.82rem;font-weight:600;white-space:nowrap;min-width:52px}
+  .event-day-text{font-size:0.7rem;color:var(--muted);white-space:nowrap}
+  .event-title-tag{font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;flex:1;white-space:nowrap}
+  .event-title-tag.sunday{color:var(--blue)}
+  .event-title-tag.ipm{color:var(--yellow)}
+  .card-body{padding:10px 14px;background:#fff}
+  .roles-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .role-label{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:4px}
+  .role-actions{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+
+  /* PERSON TAG — view mode: plain text; admin mode: pill with X */
+  .person-name-view{font-size:0.82rem;font-weight:500;color:var(--text);display:block;margin-bottom:2px}
+  .person-name-view.match{color:var(--blue);font-weight:600}
+  .person-tag{display:inline-flex;align-items:center;gap:4px;background:var(--light);border:1px solid var(--border);border-radius:100px;padding:3px 8px 3px 10px;font-size:0.75rem;font-weight:500;color:var(--text)}
+  .person-tag.match{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue)}
+  .remove-btn{background:none;border:none;cursor:pointer;color:#9ca3af;font-size:11px;line-height:1;padding:0 1px;display:inline-flex;align-items:center}
+  .remove-btn:hover{color:var(--red)}
+  .add-role-btn{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:100px;padding:3px 10px;font-size:0.72rem;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
+  .add-role-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+  /* Admin-only elements hidden by default */
+  .admin-only-el{display:none}
+
+  .card-footer{padding:8px 14px;border-top:1px solid var(--border);background:var(--light);display:flex;gap:8px;align-items:center}
+
+  /* WEEK NAV */
+  .week-nav{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .week-nav-btn{background:var(--light);border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer;font-size:0.78rem;font-weight:600;color:var(--text);transition:all 0.15s;font-family:'Inter',sans-serif}
+  .week-nav-btn:hover{border-color:#9ca3af}
+  .week-range{font-size:0.92rem;font-weight:600;color:var(--text)}
+  .today-btn{font-size:0.72rem;color:var(--blue);background:none;border:1px solid var(--blue-border);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500}
+  .today-btn:hover{background:var(--blue-bg)}
+
+  /* EVENTS TAB */
+  .section-heading{font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .event-form{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:28px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .form-field{display:flex;flex-direction:column;gap:4px}
+  .form-label{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
+  input[type=text],input[type=date],textarea,select.form-select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.82rem;padding:7px 10px;color:var(--text)}
+  textarea{resize:vertical;min-height:56px}
+  .assignment-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+  .assignment-row input{flex:1;min-width:100px}
+  .assignment-row select{flex:1;min-width:130px}
+
+  /* CUSTOM EVENTS */
+  .custom-event-card{border:1px solid var(--green-border);background:var(--green-bg);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+  .custom-event-name{font-size:0.88rem;font-weight:700;color:var(--green);margin-bottom:3px}
+  .custom-event-meta{font-size:0.72rem;color:var(--muted);margin-bottom:8px}
+  .custom-event-assignment{font-size:0.78rem;color:var(--text);margin-bottom:2px}
+  .custom-event-actions{margin-top:10px;display:flex;gap:6px}
+
+  /* MODALS */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:500;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:#fff;border-radius:10px;padding:24px;width:90%;max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+  .modal-title{font-size:0.95rem;font-weight:700;margin-bottom:4px}
+  .modal-sub{font-size:0.75rem;color:var(--muted);margin-bottom:16px}
+  .email-body{background:var(--light);border:1px solid var(--border);border-radius:6px;padding:14px;font-size:0.8rem;line-height:1.75;white-space:pre-wrap;color:var(--text);font-family:'Inter',sans-serif}
+  .modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;align-items:center}
+  .copy-success{font-size:0.72rem;color:var(--green);display:none;margin-right:auto}
+  .option-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+  .option-btn{background:var(--light);border:1px solid var(--border);border-radius:6px;padding:10px 14px;cursor:pointer;font-size:0.82rem;font-weight:500;transition:all 0.15s;text-align:left;width:100%;font-family:'Inter',sans-serif;color:var(--text)}
+  .option-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+  .option-btn.danger{color:var(--red)}.option-btn.danger:hover{border-color:var(--red-border);background:var(--red-bg)}
+  .option-btn.disabled{opacity:0.35;cursor:not-allowed;pointer-events:none}
+
+  /* PASSWORD MODAL */
+  .pw-input{width:100%;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.88rem;padding:9px 12px;margin-top:12px;color:var(--text)}
+  .pw-input:focus{outline:none;border-color:var(--blue)}
+  .pw-error{font-size:0.75rem;color:var(--red);margin-top:6px;display:none}
+
+  .no-results{text-align:center;padding:48px 20px;color:var(--muted);font-size:0.85rem}
+
+  @media(max-width:560px){
+    .app-header{padding:16px 14px 0}
+    .panel{padding:16px 14px 48px}
+    .roles-grid{grid-template-columns:1fr}
+    .card-header{flex-wrap:wrap;gap:6px}
+    .form-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-row">
+    <div class="app-title">Creative Media Schedule <span>2026</span></div>
+    <div class="admin-controls">
+      <span class="admin-badge" id="adminBadge">Admin</span>
+      <button class="lock-btn" id="lockBtn" onclick="handleLockBtn()">&#128274; Admin</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('schedule',this)">Schedule</button>
+    <button class="tab-btn" onclick="switchTab('weekly',this)">Weekly</button>
+    <button class="tab-btn admin-only" id="eventsTab" onclick="switchTab('events',this)">Events</button>
+  </div>
+</div>
+
+<!-- SCHEDULE TAB -->
+<div class="panel active" id="panel-schedule">
+  <div class="controls">
+    <select id="personFilter" onchange="renderSchedule()">
+      <option value="all">All Members</option>
+      <option>Ellyce Faith De Guzman</option><option>Khayte Garcia</option><option>Ylmor Mark Galay</option>
+      <option>Ronjacob Gambala</option><option>Fred Gayo</option><option>Sharlene Chipongian</option>
+      <option>Nicelle Castañeda</option><option>Johncel Castañeda</option><option>Kyle Loja</option>
+    </select>
+    <div class="month-filters">
+      <button class="month-btn active" onclick="setMonth('all',this)">All</button>
+      <button class="month-btn" onclick="setMonth('May',this)">May</button>
+      <button class="month-btn" onclick="setMonth('Jun',this)">Jun</button>
+      <button class="month-btn" onclick="setMonth('Jul',this)">Jul</button>
+      <button class="month-btn" onclick="setMonth('Aug',this)">Aug</button>
+      <button class="month-btn" onclick="setMonth('Sep',this)">Sep</button>
+      <button class="month-btn" onclick="setMonth('Oct',this)">Oct</button>
+      <button class="month-btn" onclick="setMonth('Nov',this)">Nov</button>
+      <button class="month-btn" onclick="setMonth('Dec',this)">Dec</button>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-pip" style="background:#1a56db"></div>Sunday Service</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#fbbf24"></div>IPM (Wednesday)</div>
+  </div>
+  <div id="scheduleContainer"></div>
+</div>
+
+<!-- WEEKLY TAB -->
+<div class="panel" id="panel-weekly">
+  <div class="week-nav">
+    <button class="week-nav-btn" onclick="changeWeek(-1)">&#8592; Prev</button>
+    <div class="week-range" id="weekRangeLabel"></div>
+    <button class="week-nav-btn" onclick="changeWeek(1)">Next &#8594;</button>
+    <button class="today-btn" onclick="goToCurrentWeek()">This Week</button>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-pip" style="background:#1a56db"></div>Sunday Service</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#fbbf24"></div>IPM (Wednesday)</div>
+  </div>
+  <div id="weeklyContainer"></div>
+</div>
+
+<!-- EVENTS TAB (admin only) -->
+<div class="panel" id="panel-events">
+  <div class="section-heading">Add Special Event</div>
+  <div class="event-form">
+    <div class="form-grid">
+      <div class="form-field"><label class="form-label">Event Name</label><input type="text" id="evtName" placeholder="e.g. Couples Night"></div>
+      <div class="form-field"><label class="form-label">Date</label><input type="date" id="evtDate"></div>
+      <div class="form-field"><label class="form-label">Category</label>
+        <select class="form-select" id="evtCategory">
+          <option>Special Event</option><option>Camp</option><option>Outreach</option>
+          <option>Youth Event</option><option>Conference</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-field"><label class="form-label">Notes</label><input type="text" id="evtNotes" placeholder="Optional"></div>
+    </div>
+    <div class="form-field" style="margin-bottom:12px">
+      <label class="form-label" style="margin-bottom:6px">Task Assignments</label>
+      <div id="assignmentRows">
+        <div class="assignment-row">
+          <input type="text" placeholder="Task (e.g. Photographer)">
+          <select><option value="">Select person</option><option>Ellyce Faith De Guzman</option><option>Khayte Garcia</option><option>Ylmor Mark Galay</option><option>Ronjacob Gambala</option><option>Fred Gayo</option><option>Sharlene Chipongian</option><option>Nicelle Castañeda</option><option>Johncel Castañeda</option><option>Kyle Loja</option></select>
+          <button class="btn btn-secondary btn-sm" onclick="removeRow(this)">✕</button>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:8px;width:fit-content" onclick="addRow()">+ Add Task</button>
+    </div>
+    <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
+    <span id="evtMsg" style="font-size:0.72rem;color:var(--green);margin-left:10px;display:none">Saved!</span>
+  </div>
+  <div class="section-heading">Special Events</div>
+  <div id="customEventsList"><div class="no-results">No special events added yet.</div></div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="modal-overlay" id="pwModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-title" id="pwModalTitle">Admin Login</div>
+    <div class="modal-sub" id="pwModalSub">Enter the admin password to unlock edit controls.</div>
+    <input class="pw-input" type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')submitPassword()">
+    <div class="pw-error" id="pwError">Incorrect password. Try again.</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('pwModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPassword()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-title">Email Notification</div>
+    <div class="modal-sub">Copy this and paste it into your email. Add the recipient's address when ready.</div>
+    <div class="email-body" id="emailBody"></div>
+    <div class="modal-actions">
+      <span class="copy-success" id="copySuccess">Copied!</span>
+      <button class="btn btn-secondary" onclick="closeModal('emailModal')">Close</button>
+      <button class="btn btn-primary" onclick="copyEmail()">Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- PICKER MODAL (replace / add) -->
+<div class="modal-overlay" id="pickerModal">
+  <div class="modal">
+    <div class="modal-title" id="pickerTitle"></div>
+    <div class="modal-sub" id="pickerSub"></div>
+    <div class="option-list" id="pickerList"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('pickerModal')">Cancel</button></div>
+  </div>
+</div>
+
+<script>
+// ---- CONFIG ----
+const ADMIN_PASSWORD = 'JCAGCreativeMedia';
+let isAdmin = false;
+
+const ALL_PEOPLE = ["Ellyce Faith De Guzman","Khayte Garcia","Ylmor Mark Galay","Ronjacob Gambala","Fred Gayo","Sharlene Chipongian","Nicelle Castañeda","Johncel Castañeda","Kyle Loja"];
+const MONTH_NAMES = {May:'May 2026',Jun:'June 2026',Jul:'July 2026',Aug:'August 2026',Sep:'September 2026',Oct:'October 2026',Nov:'November 2026',Dec:'December 2026'};
+const MONTH_ORDER = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_MAP = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+
+let activeMonth = 'all';
+let weekOffset = 0;
+let customEvents = [];
+
+let schedule = [
+  {id:0,date:"May 03",day:"Sunday",month:"May",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:1,date:"May 06",day:"Wednesday",month:"May",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:2,date:"May 10",day:"Sunday",month:"May",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:3,date:"May 13",day:"Wednesday",month:"May",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:4,date:"May 17",day:"Sunday",month:"May",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:5,date:"May 20",day:"Wednesday",month:"May",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:6,date:"May 24",day:"Sunday",month:"May",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:7,date:"May 27",day:"Wednesday",month:"May",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:8,date:"May 31",day:"Sunday",month:"May",week:"Week 5",event:"Sunday Service",type:"sunday",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:9,date:"Jun 03",day:"Wednesday",month:"Jun",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:10,date:"Jun 07",day:"Sunday",month:"Jun",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:11,date:"Jun 10",day:"Wednesday",month:"Jun",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:12,date:"Jun 14",day:"Sunday",month:"Jun",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:13,date:"Jun 17",day:"Wednesday",month:"Jun",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:14,date:"Jun 21",day:"Sunday",month:"Jun",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:15,date:"Jun 24",day:"Wednesday",month:"Jun",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:16,date:"Jun 28",day:"Sunday",month:"Jun",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:17,date:"Jul 01",day:"Wednesday",month:"Jul",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:18,date:"Jul 05",day:"Sunday",month:"Jul",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:19,date:"Jul 08",day:"Wednesday",month:"Jul",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:20,date:"Jul 12",day:"Sunday",month:"Jul",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:21,date:"Jul 15",day:"Wednesday",month:"Jul",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:22,date:"Jul 19",day:"Sunday",month:"Jul",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:23,date:"Jul 22",day:"Wednesday",month:"Jul",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:24,date:"Jul 26",day:"Sunday",month:"Jul",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:25,date:"Jul 29",day:"Wednesday",month:"Jul",week:"Week 5",event:"IPM",type:"ipm",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:26,date:"Aug 02",day:"Sunday",month:"Aug",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:27,date:"Aug 05",day:"Wednesday",month:"Aug",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:28,date:"Aug 09",day:"Sunday",month:"Aug",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:29,date:"Aug 12",day:"Wednesday",month:"Aug",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:30,date:"Aug 16",day:"Sunday",month:"Aug",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:31,date:"Aug 19",day:"Wednesday",month:"Aug",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:32,date:"Aug 23",day:"Sunday",month:"Aug",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:33,date:"Aug 26",day:"Wednesday",month:"Aug",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:34,date:"Aug 30",day:"Sunday",month:"Aug",week:"Week 5",event:"Sunday Service",type:"sunday",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:35,date:"Sep 02",day:"Wednesday",month:"Sep",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:36,date:"Sep 06",day:"Sunday",month:"Sep",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:37,date:"Sep 09",day:"Wednesday",month:"Sep",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:38,date:"Sep 13",day:"Sunday",month:"Sep",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:39,date:"Sep 16",day:"Wednesday",month:"Sep",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:40,date:"Sep 20",day:"Sunday",month:"Sep",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:41,date:"Sep 23",day:"Wednesday",month:"Sep",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:42,date:"Sep 27",day:"Sunday",month:"Sep",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:43,date:"Sep 30",day:"Wednesday",month:"Sep",week:"Week 5",event:"IPM",type:"ipm",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:44,date:"Oct 04",day:"Sunday",month:"Oct",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:45,date:"Oct 07",day:"Wednesday",month:"Oct",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:46,date:"Oct 11",day:"Sunday",month:"Oct",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:47,date:"Oct 14",day:"Wednesday",month:"Oct",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:48,date:"Oct 18",day:"Sunday",month:"Oct",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:49,date:"Oct 21",day:"Wednesday",month:"Oct",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:50,date:"Oct 25",day:"Sunday",month:"Oct",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:51,date:"Oct 28",day:"Wednesday",month:"Oct",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:52,date:"Nov 01",day:"Sunday",month:"Nov",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:53,date:"Nov 04",day:"Wednesday",month:"Nov",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:54,date:"Nov 08",day:"Sunday",month:"Nov",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:55,date:"Nov 11",day:"Wednesday",month:"Nov",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:56,date:"Nov 15",day:"Sunday",month:"Nov",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:57,date:"Nov 18",day:"Wednesday",month:"Nov",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:58,date:"Nov 22",day:"Sunday",month:"Nov",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:59,date:"Nov 25",day:"Wednesday",month:"Nov",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:60,date:"Nov 29",day:"Sunday",month:"Nov",week:"Week 5",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+  {id:61,date:"Dec 02",day:"Wednesday",month:"Dec",week:"Week 1",event:"IPM",type:"ipm",roles:{Photographer:["Sharlene Chipongian"],StoryTeller:["Ronjacob Gambala"],Projectionist:["Fred Gayo"]}},
+  {id:62,date:"Dec 06",day:"Sunday",month:"Dec",week:"Week 1",event:"Sunday Service",type:"sunday",roles:{Photographer:["Kyle Loja"],StoryTeller:["Nicelle Castañeda"],Projectionist:["Johncel Castañeda"]}},
+  {id:63,date:"Dec 09",day:"Wednesday",month:"Dec",week:"Week 2",event:"IPM",type:"ipm",roles:{Photographer:["Ellyce Faith De Guzman"],StoryTeller:["Khayte Garcia"],Projectionist:["Ylmor Mark Galay"]}},
+  {id:64,date:"Dec 13",day:"Sunday",month:"Dec",week:"Week 2",event:"Sunday Service",type:"sunday",roles:{Photographer:["Ronjacob Gambala"],StoryTeller:["Fred Gayo"],Projectionist:["Sharlene Chipongian"]}},
+  {id:65,date:"Dec 16",day:"Wednesday",month:"Dec",week:"Week 3",event:"IPM",type:"ipm",roles:{Photographer:["Nicelle Castañeda"],StoryTeller:["Johncel Castañeda"],Projectionist:["Kyle Loja"]}},
+  {id:66,date:"Dec 20",day:"Sunday",month:"Dec",week:"Week 3",event:"Sunday Service",type:"sunday",roles:{Photographer:["Khayte Garcia"],StoryTeller:["Ylmor Mark Galay"],Projectionist:["Ellyce Faith De Guzman"]}},
+  {id:67,date:"Dec 23",day:"Wednesday",month:"Dec",week:"Week 4",event:"IPM",type:"ipm",roles:{Photographer:["Fred Gayo"],StoryTeller:["Sharlene Chipongian"],Projectionist:["Ronjacob Gambala"]}},
+  {id:68,date:"Dec 27",day:"Sunday",month:"Dec",week:"Week 4",event:"Sunday Service",type:"sunday",roles:{Photographer:["Johncel Castañeda"],StoryTeller:["Kyle Loja"],Projectionist:["Nicelle Castañeda"]}},
+  {id:69,date:"Dec 30",day:"Wednesday",month:"Dec",week:"Week 5",event:"IPM",type:"ipm",roles:{Photographer:["Ylmor Mark Galay"],StoryTeller:["Ellyce Faith De Guzman"],Projectionist:["Khayte Garcia"]}},
+];
+
+// ---- ADMIN AUTH ----
+function handleLockBtn() {
+  if (isAdmin) {
+    // Log out
+    isAdmin = false;
+    applyAdminMode();
+  } else {
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwError').style.display = 'none';
+    openModal('pwModal');
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  }
+}
+
+function submitPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    isAdmin = true;
+    closeModal('pwModal');
+    applyAdminMode();
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function applyAdminMode() {
+  const badge = document.getElementById('adminBadge');
+  const lockBtn = document.getElementById('lockBtn');
+  const eventsTab = document.getElementById('eventsTab');
+
+  if (isAdmin) {
+    badge.classList.add('visible');
+    lockBtn.textContent = '🔓 Logout';
+    eventsTab.classList.add('visible');
+  } else {
+    badge.classList.remove('visible');
+    lockBtn.innerHTML = '&#128274; Admin';
+    eventsTab.classList.remove('visible');
+    // If currently on events tab, switch back to schedule
+    if (document.getElementById('panel-events').classList.contains('active')) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-btn').classList.add('active');
+      document.getElementById('panel-schedule').classList.add('active');
+    }
+  }
+  refresh();
+}
+
+// ---- TABS ----
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab === 'weekly') renderWeekly();
+}
+
+// ---- MONTH FILTER ----
+function setMonth(m, btn) {
+  activeMonth = m;
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSchedule();
+}
+
+// ---- SCHEDULE RENDER ----
+function renderSchedule() {
+  const person = document.getElementById('personFilter').value;
+  const filtered = schedule.filter(s => {
+    if (activeMonth !== 'all' && s.month !== activeMonth) return false;
+    if (person === 'all') return true;
+    return Object.values(s.roles).some(arr => arr.includes(person));
+  });
+  const c = document.getElementById('scheduleContainer');
+  c.innerHTML = '';
+  if (!filtered.length) { c.innerHTML = '<div class="no-results">No assignments found.</div>'; return; }
+  const grouped = groupData(filtered);
+  MONTH_ORDER.forEach(m => {
+    if (!grouped[m]) return;
+    const mg = document.createElement('div'); mg.className = 'month-group';
+    mg.innerHTML = `<div class="month-heading">${MONTH_NAMES[m]}</div>`;
+    Object.keys(grouped[m]).forEach(w => {
+      const wg = document.createElement('div'); wg.className = 'week-group';
+      wg.innerHTML = `<div class="week-label">${w}</div>`;
+      grouped[m][w].forEach(s => wg.appendChild(buildCard(s, person)));
+      mg.appendChild(wg);
+    });
+    c.appendChild(mg);
+  });
+}
+
+function groupData(data) {
+  const g = {};
+  data.forEach(s => {
+    if (!g[s.month]) g[s.month] = {};
+    if (!g[s.month][s.week]) g[s.month][s.week] = [];
+    g[s.month][s.week].push(s);
+  });
+  return g;
+}
+
+// ---- CARD BUILDER ----
+function buildCard(s, filterPerson) {
+  const card = document.createElement('div'); card.className = 'event-card';
+  const ROLE_KEYS = ['Photographer', 'StoryTeller', 'Projectionist'];
+  const ROLE_LABELS = { Photographer: 'Photographer', StoryTeller: 'Story Teller', Projectionist: 'Projectionist' };
+
+  const rolesHtml = ROLE_KEYS.map(role => {
+    const people = s.roles[role] || [];
+
+    let peopleHtml;
+    if (isAdmin) {
+      // Admin: pill tags with remove button + Add button
+      const tags = people.map((p, i) => {
+        const m = (filterPerson !== 'all' && p === filterPerson) ? ' match' : '';
+        return `<span class="person-tag${m}">${p}<button class="remove-btn" onclick="openReplace(${s.id},'${role}',${i})">✕</button></span>`;
+      }).join('');
+      peopleHtml = `<div class="role-actions">${tags}<button class="add-role-btn" onclick="openAdd(${s.id},'${role}')">+ Add</button></div>`;
+    } else {
+      // View only: plain text names
+      const names = people.map(p => {
+        const m = (filterPerson !== 'all' && p === filterPerson) ? ' match' : '';
+        return `<span class="person-name-view${m}">${p}</span>`;
+      }).join('');
+      peopleHtml = `<div>${names || '<span style="color:#d1d5db;font-size:0.78rem">—</span>'}</div>`;
+    }
+
+    return `<div class="role-block">
+      <div class="role-label">${ROLE_LABELS[role]}</div>
+      ${peopleHtml}
+    </div>`;
+  }).join('');
+
+  const footerHtml = isAdmin
+    ? `<div class="card-footer"><button class="btn btn-secondary btn-sm" onclick="openEmail(${s.id})">&#9993;&nbsp; Email Notification</button></div>`
+    : '';
+
+  card.innerHTML = `
+    <div class="card-header ${s.type}">
+      <div class="event-date">${s.date}</div>
+      <div class="event-day-text">${s.day}</div>
+      <div class="event-title-tag ${s.type}">${s.event}</div>
+    </div>
+    <div class="card-body"><div class="roles-grid">${rolesHtml}</div></div>
+    ${footerHtml}`;
+  return card;
+}
+
+// ---- REPLACE ----
+function openReplace(eid, role, idx) {
+  const s = schedule.find(x => x.id === eid);
+  const removed = s.roles[role][idx];
+  const assigned = allAssigned(s).filter(p => p !== removed);
+  document.getElementById('pickerTitle').textContent = `Replace ${removed}`;
+  document.getElementById('pickerSub').textContent = `${s.date} · ${s.event} · ${role === 'StoryTeller' ? 'Story Teller' : role}`;
+  const list = document.getElementById('pickerList'); list.innerHTML = '';
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'option-btn danger';
+  removeBtn.textContent = 'Remove without replacement';
+  removeBtn.onclick = () => { s.roles[role].splice(idx, 1); closeModal('pickerModal'); refresh(); };
+  list.appendChild(removeBtn);
+  ALL_PEOPLE.forEach(p => {
+    if (p === removed) return;
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (assigned.includes(p) ? ' disabled' : '');
+    btn.textContent = p + (assigned.includes(p) ? ' (already assigned)' : '');
+    btn.onclick = () => { s.roles[role][idx] = p; closeModal('pickerModal'); refresh(); };
+    list.appendChild(btn);
+  });
+  openModal('pickerModal');
+}
+
+// ---- ADD ----
+function openAdd(eid, role) {
+  const s = schedule.find(x => x.id === eid);
+  const assigned = allAssigned(s);
+  document.getElementById('pickerTitle').textContent = `Add to ${role === 'StoryTeller' ? 'Story Teller' : role}`;
+  document.getElementById('pickerSub').textContent = `${s.date} · ${s.event}`;
+  const list = document.getElementById('pickerList'); list.innerHTML = '';
+  ALL_PEOPLE.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (assigned.includes(p) ? ' disabled' : '');
+    btn.textContent = p + (assigned.includes(p) ? ' (already assigned)' : '');
+    btn.onclick = () => { s.roles[role].push(p); closeModal('pickerModal'); refresh(); };
+    list.appendChild(btn);
+  });
+  openModal('pickerModal');
+}
+
+function allAssigned(s) { return Object.values(s.roles).flat(); }
+
+// ---- EMAIL ----
+function openEmail(eid) {
+  const s = schedule.find(x => x.id === eid);
+  const LABELS = { Photographer: 'Photographer', StoryTeller: 'Story Teller', Projectionist: 'Projectionist' };
+  const lines = Object.entries(s.roles).map(([r, pp]) => pp.length ? `  ${LABELS[r]}: ${pp.join(', ')}` : null).filter(Boolean).join('\n');
+  document.getElementById('emailBody').textContent = `Hi [Name],\n\nThis is a reminder of your assignment for the upcoming service.\n\nEvent: ${s.event}\nDate: ${s.date} (${s.day})\n\nAssignments:\n${lines}\n\nPlease confirm your availability by replying to this message. If you are unable to attend, let us know as soon as possible so we can arrange a replacement.\n\nThank you and God bless,\nJohncel Castañeda\nCreative Media Team`;
+  document.getElementById('copySuccess').style.display = 'none';
+  openModal('emailModal');
+}
+
+function copyEmail() {
+  navigator.clipboard.writeText(document.getElementById('emailBody').textContent).then(() => {
+    const el = document.getElementById('copySuccess'); el.style.display = 'inline';
+    setTimeout(() => el.style.display = 'none', 2200);
+  });
+}
+
+// ---- MODALS ----
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+// ---- WEEKLY ----
+function parseDate(str) { const [m, d] = str.split(' '); return new Date(2026, MONTHS_MAP[m], parseInt(d)); }
+function fmtDate(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+
+function getWeekBounds(offset) {
+  const today = new Date();
+  const dow = today.getDay();
+  const sun = new Date(today); sun.setDate(today.getDate() - dow + (offset * 7));
+  const sat = new Date(sun); sat.setDate(sun.getDate() + 6);
+  return { sun, sat };
+}
+
+function changeWeek(d) { weekOffset += d; renderWeekly(); }
+function goToCurrentWeek() { weekOffset = 0; renderWeekly(); }
+
+function renderWeekly() {
+  const { sun, sat } = getWeekBounds(weekOffset);
+  document.getElementById('weekRangeLabel').textContent = `${fmtDate(sun)} – ${fmtDate(sat)}`;
+  const inRange = schedule.filter(s => { const d = parseDate(s.date); return d >= sun && d <= sat; });
+  const c = document.getElementById('weeklyContainer'); c.innerHTML = '';
+  if (!inRange.length) { c.innerHTML = '<div class="no-results">No scheduled events this week.</div>'; return; }
+  inRange.forEach(s => c.appendChild(buildCard(s, 'all')));
+}
+
+// ---- EVENTS TAB ----
+function addRow() {
+  const row = document.createElement('div'); row.className = 'assignment-row';
+  row.innerHTML = `<input type="text" placeholder="Task (e.g. Photographer)"><select><option value="">Select person</option>${ALL_PEOPLE.map(p => `<option>${p}</option>`).join('')}</select><button class="btn btn-secondary btn-sm" onclick="removeRow(this)">✕</button>`;
+  document.getElementById('assignmentRows').appendChild(row);
+}
+function removeRow(btn) {
+  const rows = document.getElementById('assignmentRows');
+  if (rows.children.length > 1) btn.closest('.assignment-row').remove();
+}
+function saveEvent() {
+  const name = document.getElementById('evtName').value.trim();
+  const date = document.getElementById('evtDate').value;
+  if (!name || !date) { alert('Event name and date are required.'); return; }
+  const category = document.getElementById('evtCategory').value;
+  const notes = document.getElementById('evtNotes').value.trim();
+  const rows = document.querySelectorAll('#assignmentRows .assignment-row');
+  const assignments = [];
+  rows.forEach(r => {
+    const task = r.querySelector('input').value.trim();
+    const person = r.querySelector('select').value;
+    if (task && person) assignments.push({ task, person });
+  });
+  const d = new Date(date + 'T00:00:00');
+  const displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  customEvents.push({ id: Date.now(), name, date: displayDate, rawDate: date, category, notes, assignments });
+  renderCustomEvents();
+  document.getElementById('evtName').value = '';
+  document.getElementById('evtDate').value = '';
+  document.getElementById('evtNotes').value = '';
+  document.getElementById('assignmentRows').innerHTML = `<div class="assignment-row"><input type="text" placeholder="Task (e.g. Photographer)"><select><option value="">Select person</option>${ALL_PEOPLE.map(p => `<option>${p}</option>`).join('')}</select><button class="btn btn-secondary btn-sm" onclick="removeRow(this)">✕</button></div>`;
+  const msg = document.getElementById('evtMsg'); msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+function deleteCustomEvent(id) { customEvents = customEvents.filter(e => e.id !== id); renderCustomEvents(); }
+function renderCustomEvents() {
+  const c = document.getElementById('customEventsList');
+  if (!customEvents.length) { c.innerHTML = '<div class="no-results">No special events added yet.</div>'; return; }
+  c.innerHTML = '';
+  customEvents.sort((a, b) => a.rawDate.localeCompare(b.rawDate)).forEach(e => {
+    const card = document.createElement('div'); card.className = 'custom-event-card';
+    const aHtml = e.assignments.length ? e.assignments.map(a => `<div class="custom-event-assignment"><strong>${a.task}:</strong> ${a.person}</div>`).join('') : `<div class="custom-event-assignment" style="color:var(--muted)">No assignments.</div>`;
+    card.innerHTML = `<div class="custom-event-name">${e.name}</div><div class="custom-event-meta">${e.date} &nbsp;·&nbsp; ${e.category}${e.notes ? ' &nbsp;·&nbsp; ' + e.notes : ''}</div><div>${aHtml}</div><div class="custom-event-actions"><button class="btn btn-danger btn-sm" onclick="deleteCustomEvent(${e.id})">Delete</button></div>`;
+    c.appendChild(card);
+  });
+}
+
+// ---- REFRESH ----
+function refresh() {
+  renderSchedule();
+  if (document.getElementById('panel-weekly').classList.contains('active')) renderWeekly();
+}
+
+// ---- INIT ----
+renderSchedule();
+</script>
+</body>
+</html>
